@@ -3,7 +3,6 @@
 The ultimate progress bar.
 Example usage:
 
-    """
     >>> N = 100
     >>> width = 20
     >>> bar = arjbar(N,width)
@@ -13,4 +12,3 @@ Example usage:
     ...    bar.update(i+1)
     ...
     >>> bar.finish()
-    """
