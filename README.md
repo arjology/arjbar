@@ -3,9 +3,10 @@
 The ultimate progress bar.
 Example usage:
 
+    >>> from arjbar import arjBar
     >>> N = 100
     >>> width = 20
-    >>> bar = arjbar(N,width)
+    >>> bar = arjBar(N,width)
     >>> bar.start()
     >>> for i in range(N):
     ...    # do something
