@@ -24,11 +24,13 @@ class arjBar(object):
         self.finished = False
         self.last_update_time = None
         self.seconds_elapsed = 0
+        self.runtime = 0.0
         self.size = size
         self.start_time = None
         self.width=width
         self.widget = widget
         self.s = s
+        self.rate = [0,0,0]
 
         if width is not None:
             self.term_width = width
@@ -74,11 +76,21 @@ class arjBar(object):
         return (self.val * 100.0 / self.size) if self.size else 100.00
     percent = property(percentage)
 
+    def rate_completed(self):
+        if self.val==0: return 0.0
+        self.rate = self.rate[1:] + [self.val]
+        return round(sum(self.rate)/3.0/self.runtime,4)
+    current_rate = property(rate_completed)
+
     def _format_line(self):
         percent = self.percentage()
+        current_rate = self.rate_completed()
         hashes = self.widget * int(round(percent/100.0 * self.size))
         spaces = ' ' * (self.size - len(hashes))
-        return "\rPercent: [{0}] {1}% completed in {2} seconds".format(hashes + spaces, int(round(percent)), self.seconds_elapsed)
+        return "\rPercent: [{0}] {1}% completed in {2} seconds ({3}/s))".format(hashes + spaces, 
+            int(round(percent)), 
+            self.seconds_elapsed,
+            current_rate)
 
     def update(self, value=None):
         """Updates the ProgressBar to a new value."""
@@ -96,6 +108,7 @@ class arjBar(object):
 
         now = time.time()
         self.seconds_elapsed = round(now - self.start_time, 2)
+        self.runtime = now - self.start_time
         self.s.write('\r' + self._format_line())
         self.s.flush()
         self.last_update_time = now
